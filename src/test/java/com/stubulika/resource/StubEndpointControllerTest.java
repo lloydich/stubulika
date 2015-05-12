@@ -33,65 +33,77 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @WebAppConfiguration
 @IntegrationTest
 public class StubEndpointControllerTest {
+    public static final int ERROR_STATUS = 500;
+    public static final String POST_METHOD = "POST";
     Logger logger = LoggerFactory.getLogger(StubAdminController.class);
-
 
     final String BASE_URL = "http://localhost:8080/endpoint/";
 
     @Autowired
     private StubAdminRepository stubAdminRepository;
 
+    private static final int OK_STATUS = 200;
+    private HashMap<String, Object> body = new HashMap<>();;
+    private static final String HEADER_KEY = "Content-Type";
+    private static final String HEADER_VALUE = "application/json; charset=UTF-8";
+    private static final String RESOURCE_URL = "aUrl";
+    private static final String GET_METHOD = "GET";
+    private  Gson gson  = new Gson();
 
     @Test
-    public void shouldReturnStubResponseForRetrieve() throws Exception {
+    public void shouldReturnStubResponseForGetFromStubEndpoint() throws Exception {
 
         //given
-        final String RESOURCE_URL = "aUrl";
-        final String METHOD = "GET";
-
+        body.put("foo", "bar");
         StubRequest stubRequest = new StubRequest();
         stubRequest.setUrl(RESOURCE_URL);
-        stubRequest.setMethod(METHOD);
-
-        StubAdminRequest stubAdminRequest = new StubAdminRequest();
-
-        stubAdminRequest.setRequest(stubRequest);
-        StubResponse stubResponse = new StubResponse();
-        int status = 200;
-        stubResponse.setStatus(status);
-        HashMap<String, Object> body = new HashMap<>();
-        body.put("foo","bar");
-        Gson gson = new Gson();
-        stubResponse.setBody(gson.toJson(body));
-        HttpHeaders headers = new HttpHeaders();
-        String headerKey = "Content-Type";
-        String headerValue = "application/json; charset=UTF-8";
-        headers.put(headerKey, Arrays.asList(headerValue));
-        stubResponse.setHeaders(headers);
+        stubRequest.setMethod(GET_METHOD);
+        StubResponse stubResponse = createStubResponse(OK_STATUS);
 
         stubAdminRepository.save(stubRequest,stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
 
         //when
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL+RESOURCE_URL,
-                String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL+ RESOURCE_URL, String.class);
 
 
         //then
-        String expectedBody = gson.toJson(body);
-        assertThat(response.getBody(), equalTo(expectedBody));
-        assertThat(response.getStatusCode().value(), equalTo(status));
-        assertThat(response.getHeaders(), hasEntry(headerKey, Arrays.asList(headerValue)));
+        assertThat(response.getBody(), equalTo(gson.toJson(body)));
+        assertThat(response.getStatusCode().value(), equalTo(OK_STATUS));
+        assertThat(response.getHeaders(), hasEntry(HEADER_KEY, Arrays.asList(HEADER_VALUE)));
     }
 
     @Test
-    public void shouldReturnNotFoundForRetrieve(){
+    public void shouldReturnStubResponseForPostToStubEndpoint() throws Exception {
+
         //given
+        body.put("foo", "bar");
+        StubRequest stubRequest = new StubRequest();
+        stubRequest.setUrl(RESOURCE_URL);
+        stubRequest.setBody(gson.toJson(body));
+        stubRequest.setMethod(POST_METHOD);
+        StubResponse stubResponse = createStubResponse(ERROR_STATUS);
+
+        stubAdminRepository.save(stubRequest,stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
 
+        //when
+        ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + RESOURCE_URL, String.class, null);
+
+
+        //then
+        System.out.println("response:"+response);
+        assertThat(response.getStatusCode().value(), equalTo(ERROR_STATUS));
+    }
+
+
+
+    @Test
+    public void shouldReturnNotFoundForGetFromStubEndpoint(){
+        //given
+        RestTemplate restTemplate = new TestRestTemplate();
 
         //when
         ResponseEntity<String> response = restTemplate.getForEntity(
@@ -102,9 +114,17 @@ public class StubEndpointControllerTest {
 
         //then
         assertThat(response.getStatusCode().value(), equalTo(404));
-
-
     }
 
+
+    private StubResponse createStubResponse(int status) {
+        StubResponse stubResponse = new StubResponse();
+        stubResponse.setStatus(status);
+        stubResponse.setBody(gson.toJson(body));
+        HttpHeaders headers = new HttpHeaders();
+        headers.put(HEADER_KEY, Arrays.asList(HEADER_VALUE));
+        stubResponse.setHeaders(headers);
+        return stubResponse;
+    }
 
 }

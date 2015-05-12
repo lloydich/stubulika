@@ -32,26 +32,33 @@ public class StubEndpointController {
     }
 
 
-    @RequestMapping(value="/**", method = RequestMethod.GET)
-    public ResponseEntity<?>  get(HttpServletRequest request) {
+    @RequestMapping(value="/**")
+    public ResponseEntity<?> resolve(HttpServletRequest request) {
 
-        String path = (String) request.getAttribute(
-                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-        String bestMatchPattern = (String ) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String resourcePath = getPath(request);
 
-        AntPathMatcher apm = new AntPathMatcher();
-        String resourcePath = apm.extractPathWithinPattern(bestMatchPattern, path);
-        // on "/properties/foo/bar", resourcePath contains "foo/bar"
-        logger.debug("get() resourcePath:"+resourcePath);
+        logger.debug("resolve() resourcePath:"+resourcePath);
         StubRequest stubRequest = new StubRequest();
-        stubRequest.setMethod("GET");
+        RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
+        logger.debug("resolve() requestMethod:"+requestMethod);
+        stubRequest.setMethod(requestMethod.name());
         stubRequest.setUrl(resourcePath);
         StubResponse stubResponse = stubAdminRepository.find(stubRequest);
-        logger.debug("get() stubResponse:"+stubResponse);
+        logger.debug("resolve() stubResponse:"+stubResponse);
         if(stubResponse==null){
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(stubResponse.getBody(), stubResponse.getHeaders(), HttpStatus.valueOf(stubResponse.getStatus()));
+    }
+
+    private String getPath(HttpServletRequest request) {
+        String path = (String) request.getAttribute(
+                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+
+        AntPathMatcher apm = new AntPathMatcher();
+        // on "/properties/foo/bar", resourcePath contains "foo/bar"
+        return apm.extractPathWithinPattern(bestMatchPattern, path);
     }
 
 }
