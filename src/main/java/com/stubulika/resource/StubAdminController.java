@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -25,27 +25,31 @@ public class StubAdminController {
     private StubAdminService stubAdminService;
     
     @RequestMapping(method = RequestMethod.GET)
-    public String get() {
-        return "Greetings from Stubulika! \n Here is a list of configured endpoints:";
+    public ResponseEntity <List<StubAdminRequest>> get() {
+        List<StubAdminRequest> stubs = stubAdminService.findAll();
+        ResponseEntity<List<StubAdminRequest>>  response = new ResponseEntity<>(stubs, HttpStatus.OK);
+        logger.debug("get() actual response:"+response);
+        return response;
     }
 
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add ( HttpServletRequest request, @RequestBody StubAdminRequest input )   {
-        logger.debug("add() POST! input:"+input);
+    ResponseEntity<?> add ( @RequestBody StubAdminRequest StubAdminRequest )   {
+        logger.debug("add()  StubAdminRequest:"+StubAdminRequest);
 
-        StubRequest stubRequest = input.getRequest();
+        StubRequest stubRequest = StubAdminRequest.getRequest();
 
-        StubResponse stubResponse = input.getResponse();
-        logger.debug("add() POST! stubresponse:"+input.getResponse());
+        StubResponse stubResponse = StubAdminRequest.getResponse();
+        logger.debug("add()  stubresponse:" + StubAdminRequest.getResponse());
 
         stubAdminService.save(stubRequest, stubResponse);
 
         ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.CREATED);
-        logger.debug("add() response:"+response);
+        logger.debug("add() actual response:"+response);
         return response;
 
     }
+
 
 
 
