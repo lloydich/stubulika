@@ -2,15 +2,12 @@ package com.stubulika.domain;
 
 import org.springframework.http.HttpHeaders;
 
-import java.util.Map;
-
 public class StubResponse {
 
     private int status;
-    private Map<String, Object> body;
+    private String body;
     private HttpHeaders headers;
 
-   // private HashMap headersMap;
 
     public int getStatus() {
         return status;
@@ -20,23 +17,15 @@ public class StubResponse {
         this.status = status;
     }
 
-    public Map<String, Object> getBody() {
+    public String getBody() {
         return body;
     }
 
-    public void setBody(Map<String, Object> body) {
+    public void setBody(String body) {
         this.body = body;
     }
 
-//      @JsonAnyGetter
-//    public HashMap getHeadersMap() {
-//        return headersMap;
-//    }
-//
-//    @JsonAnySetter
-//    public void setHeadersMap(HashMap headersMap) {
-//        this.headersMap = headersMap;
-//    }
+
 
     //latency
 
@@ -69,7 +58,6 @@ public class StubResponse {
         result = 31 * result + (body != null ? body.hashCode() : 0);
         result = 31 * result + (headers != null ? headers.hashCode() : 0);
         return result;
-
     }
 
     @Override

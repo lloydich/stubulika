@@ -61,7 +61,8 @@ public class StubEndpointControllerTest {
         stubResponse.setStatus(status);
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo","bar");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
         HttpHeaders headers = new HttpHeaders();
         String headerKey = "Content-Type";
         String headerValue = "application/json; charset=UTF-8";
@@ -79,7 +80,6 @@ public class StubEndpointControllerTest {
 
 
         //then
-        Gson gson = new Gson();
         String expectedBody = gson.toJson(body);
         assertThat(response.getBody(), equalTo(expectedBody));
         assertThat(response.getStatusCode().value(), equalTo(status));

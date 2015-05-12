@@ -1,5 +1,6 @@
 package com.stubulika;
 
+import com.google.gson.Gson;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
 import com.stubulika.resource.StubAdminRequest;
@@ -43,9 +44,12 @@ public class StubAdminControllerTest {
         stubRequest.setMethod(METHOD);
 
         StubResponse  stubResponse = new StubResponse();
+
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo", "bar");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
+
         HttpHeaders headers = new HttpHeaders();
         headers.put("key", Arrays.asList("value"));
         stubResponse.setHeaders(headers);

@@ -1,5 +1,6 @@
 package com.stubulika.repository;
 
+import com.google.gson.Gson;
 import com.stubulika.Application;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
@@ -7,11 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +43,8 @@ public class StubAdminRepositoryTest {
         StubResponse stubResponse = new StubResponse();
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo","bar");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
         stubResponse.setStatus(200);
 
         //when
@@ -64,12 +68,19 @@ public class StubAdminRepositoryTest {
         StubResponse stubResponse = new StubResponse();
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo","bar");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
         stubResponse.setStatus(200);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.put("Content-Type", Arrays.asList("application/json"));
+        stubResponse.setHeaders(responseHeaders);
         storeMap.put(stubRequest,stubResponse);
+        System.out.println("foobar:"+stubResponse);
+
 
         //when
         StubResponse actual = stubRepo.find(stubRequest);
+
 
         //then
         assertThat(actual, equalTo(stubResponse));
@@ -85,9 +96,9 @@ public class StubAdminRepositoryTest {
         StubResponse stubResponse = new StubResponse();
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo","bar");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
         stubResponse.setStatus(200);
-
 
         //when
         stubRepo.save(stubRequest, stubResponse);
@@ -108,13 +119,14 @@ public class StubAdminRepositoryTest {
         StubResponse stubResponse = new StubResponse();
         HashMap<String, Object> body = new HashMap<>();
         body.put("foo","aBody");
-        stubResponse.setBody(body);
+        Gson gson = new Gson();
+        stubResponse.setBody(gson.toJson(body));
         stubResponse.setStatus(200);
 
         StubResponse stubResponse2 = new StubResponse();
         HashMap<String, Object> body2 = new HashMap<>();
-        body.put("foo","aBody2");
-        stubResponse2.setBody(body2);
+        body2.put("foo","aBody2");
+        stubResponse2.setBody(gson.toJson(body2));
         stubResponse2.setStatus(500);
 
 
