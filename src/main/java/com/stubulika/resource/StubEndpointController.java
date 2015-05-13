@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 
 @RestController
 @RequestMapping("/endpoint")
@@ -43,12 +44,30 @@ public class StubEndpointController {
         logger.debug("resolve() requestMethod:"+requestMethod);
         stubRequest.setMethod(requestMethod.name());
         stubRequest.setUrl(resourcePath);
+        String body = extractBody(request);
+        stubRequest.setBody(body);
         StubResponse stubResponse = stubAdminRepository.find(stubRequest);
         logger.debug("resolve() stubResponse:"+stubResponse);
         if(stubResponse==null){
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(stubResponse.getBody(), stubResponse.getHeaders(), HttpStatus.valueOf(stubResponse.getStatus()));
+    }
+
+    private String extractBody(HttpServletRequest request) {
+        String body = null;
+                StringBuffer jb = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null)
+                jb.append(line);
+        } catch (Exception e) { logger.error("extractBody() "+e); }
+        if(jb.length()>0) {
+            body = jb.toString();
+        }
+        logger.debug("extractBody() "+body);
+        return body;
     }
 
     private String getPath(HttpServletRequest request) {

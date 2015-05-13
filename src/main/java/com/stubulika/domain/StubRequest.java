@@ -1,13 +1,10 @@
 package com.stubulika.domain;
 
-import java.util.Map;
+import org.springframework.http.HttpHeaders;
 
 public class StubRequest {
 
-    //get url
-    //get method POST & GET
-    //body
-    //get headers
+    // headers
     //query strings?
 
     private String url;
@@ -16,7 +13,7 @@ public class StubRequest {
 
     private String body;
 
-    private Map<String,String> headers;
+    private HttpHeaders headers;
 
     public String getUrl() {
         return url;
@@ -42,12 +39,12 @@ public class StubRequest {
         this.body = body;
     }
 
-    public Map<String, String> getHeaders() {
-        return headers;
+    public void setHeaders(HttpHeaders headers) {
+        this.headers = headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    public HttpHeaders getHeaders() {
+        return headers;
     }
 
 
@@ -58,6 +55,7 @@ public class StubRequest {
 
         StubRequest that = (StubRequest) o;
 
+        if (body != null ? !body.equals(that.body) : that.body != null) return false;
         if (method != null ? !method.equals(that.method) : that.method != null) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
 
@@ -68,6 +66,7 @@ public class StubRequest {
     public int hashCode() {
         int result = url != null ? url.hashCode() : 0;
         result = 31 * result + (method != null ? method.hashCode() : 0);
+        result = 31 * result + (body != null ? body.hashCode() : 0);
         return result;
     }
 

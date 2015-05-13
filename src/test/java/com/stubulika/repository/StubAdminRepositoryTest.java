@@ -6,9 +6,11 @@ import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
 import com.stubulika.resource.StubAdminRequest;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,6 +27,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(classes = Application.class, loader = SpringApplicationContextLoader.class)
+@IntegrationTest
 public class StubAdminRepositoryTest {
     @Resource
     private Map<StubRequest, StubResponse> storeMap;
@@ -83,7 +86,6 @@ public class StubAdminRepositoryTest {
         stubRepo.save(stubRequest, stubResponse);
         stubRepo.save(stubRequest, stubResponse);
 
-
         //then
         assertThat(storeMap.size(),equalTo(1));
     }
@@ -94,8 +96,6 @@ public class StubAdminRepositoryTest {
         StubRequest stubRequest = createStubRequest("testUrl", "testMethod");
         StubResponse stubResponse =  createStubResponse("foo", "aBody");
         StubResponse stubResponse2 =  createStubResponse("foo", "aBody2", 500);
-
-
 
         //when
         stubRepo.save(stubRequest, stubResponse);
