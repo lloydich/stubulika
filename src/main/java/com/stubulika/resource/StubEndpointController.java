@@ -2,7 +2,7 @@ package com.stubulika.resource;
 
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
-import com.stubulika.repository.StubAdminRepository;
+import com.stubulika.repository.StubRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +27,12 @@ public class StubEndpointController {
     Logger logger = LoggerFactory.getLogger(StubEndpointController.class);
 
 
-    private final StubAdminRepository stubAdminRepository;
+    private final StubRepository stubRepository;
 
     public
     @Autowired
-    StubEndpointController(StubAdminRepository stubAdminRepository) {
-        this.stubAdminRepository = stubAdminRepository;
+    StubEndpointController(StubRepository stubRepository) {
+        this.stubRepository = stubRepository;
     }
 
 
@@ -49,7 +49,7 @@ public class StubEndpointController {
         stubRequest.setBody(extractBody(request));
         stubRequest.setHeaders(extractHeaders(request));
 
-        StubResponse stubResponse = stubAdminRepository.find(stubRequest);
+        StubResponse stubResponse = stubRepository.find(stubRequest);
         logger.debug("resolve() stubResponse:" + stubResponse);
         if (stubResponse == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);

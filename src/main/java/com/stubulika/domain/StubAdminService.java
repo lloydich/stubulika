@@ -1,6 +1,6 @@
 package com.stubulika.domain;
 
-import com.stubulika.repository.StubAdminRepository;
+import com.stubulika.repository.StubRepository;
 import com.stubulika.resource.StubAdminRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,12 @@ public class StubAdminService {
     private Logger logger = LoggerFactory.getLogger(StubAdminService.class);
 
 
-    private StubAdminRepository stubAdminRepository;
+    private StubRepository stubRepository;
 
     public
     @Autowired
-    StubAdminService(StubAdminRepository stubAdminRepository) {
-        this.stubAdminRepository = stubAdminRepository;
+    StubAdminService(StubRepository stubRepository) {
+        this.stubRepository = stubRepository;
     }
 
     public void save(StubRequest request, StubResponse response) {
@@ -30,10 +30,10 @@ public class StubAdminService {
         }
         logger.debug("save()  stubresponse:" + request);
         logger.debug("save()  stubresponse:" + response);
-        stubAdminRepository.save(request, response);
+        stubRepository.save(request, response);
     }
 
     public List<StubAdminRequest> findAll() {
-        return stubAdminRepository.findAll();
+        return stubRepository.findAll();
     }
 }

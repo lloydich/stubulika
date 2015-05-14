@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class StubAdminRepository {
+public class StubRepository {
     private Logger logger = LoggerFactory.getLogger(StubAdminController.class);
 
     private StubStore stubStore;
@@ -20,7 +20,7 @@ public class StubAdminRepository {
 
     public
     @Autowired
-    StubAdminRepository(StubStore stubStore) {
+    StubRepository(StubStore stubStore) {
         this.stubStore = stubStore;
     }
 

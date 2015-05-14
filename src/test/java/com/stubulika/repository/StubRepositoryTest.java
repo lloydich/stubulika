@@ -30,18 +30,18 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(classes = Application.class, loader = SpringApplicationContextLoader.class)
 @IntegrationTest
-public class StubAdminRepositoryTest {
+public class StubRepositoryTest {
 
     public static final String TEST_URL = "testUrl";
     public static final String TEST_METHOD = "testMethod";
-    private Logger logger = LoggerFactory.getLogger(StubAdminRepositoryTest.class);
+    private Logger logger = LoggerFactory.getLogger(StubRepositoryTest.class);
 
     @Resource
     private Map<StubRequest, StubResponse> storeMap;
 
 
     @Autowired
-    private StubAdminRepository stubRepo;
+    private StubRepository stubRepo;
 
 
     @Test
