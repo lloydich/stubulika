@@ -60,10 +60,4 @@ public class StubAdminController {
         return response;
 
     }
-
-    //delete
-
-
-
-    
 }
