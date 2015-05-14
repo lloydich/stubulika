@@ -40,4 +40,8 @@ public class StubRepository {
     public List<StubAdminRequest> findAll() {
         return stubStore.findAll();
     }
+
+    public void delete(StubRequest stubRequest) {
+        stubStore.delete(stubRequest);
+    }
 }

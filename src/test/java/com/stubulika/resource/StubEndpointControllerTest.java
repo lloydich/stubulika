@@ -44,8 +44,8 @@ public class StubEndpointControllerTest {
     public static final String NO_BODY = null;
     public static final String PUT_METHOD = "PUT";
     public static final String DELETE_METHOD = "DELETE";
-    public static final int NO_CONTENT_STATUS = 204;
-    Logger logger = LoggerFactory.getLogger(StubEndpointControllerTest.class);
+    public static final int ACCEPTED_STATUS = 202;
+    private Logger logger = LoggerFactory.getLogger(StubEndpointControllerTest.class);
 
     private final String BASE_URL = "http://localhost:8080/endpoint/";
 
@@ -53,7 +53,6 @@ public class StubEndpointControllerTest {
     private StubAdminService stubAdminService;
 
     private static final int OK_STATUS = 200;
-    private static final int CREATED_STATUS = 201;
 
     private static final String HEADER_KEY = "Content-Type";
     private static final String HEADER_VALUE = "application/json; charset=UTF-8";
@@ -129,11 +128,11 @@ public class StubEndpointControllerTest {
     }
 
     @Test
-    public void shouldReturnAcceptedStatusStubResponseForDeleteOnStubEndpoint() throws Exception {
+    public void shouldReturnAStatusStubResponseForDeleteOnStubEndpoint() throws Exception {
         //given
         String url = RESOURCE_URL + "/1";
         StubRequest stubRequest = createStubRequest(url, DELETE_METHOD);
-        StubResponse stubResponse = createStubResponse(NO_CONTENT_STATUS, NO_BODY);
+        StubResponse stubResponse = createStubResponse(ACCEPTED_STATUS, NO_BODY);
 
         stubAdminService.save(stubRequest, stubResponse);
 
@@ -144,7 +143,7 @@ public class StubEndpointControllerTest {
         logger.debug("shouldReturnAcceptedStatusStubResponseForDeleteOnStubEndpoint() response:" + response);
 
         //then
-        assertThat(response.getStatusCode().value(), equalTo(NO_CONTENT_STATUS));
+        assertThat(response.getStatusCode().value(), equalTo(ACCEPTED_STATUS));
     }
 
     @Test

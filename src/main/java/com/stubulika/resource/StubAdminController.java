@@ -39,7 +39,6 @@ public class StubAdminController {
 
         StubRequest stubRequest = stubAdminRequest.getRequest();
         StubResponse stubResponse = stubAdminRequest.getResponse();
-        logger.debug("add()  stubRequest:" + stubRequest);
         stubAdminService.save(stubRequest, stubResponse);
 
         ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.CREATED);
@@ -49,7 +48,18 @@ public class StubAdminController {
     }
 
 
+    @RequestMapping(method = RequestMethod.DELETE)
+    ResponseEntity<?> delete ( @RequestBody StubAdminRequest stubAdminRequest )   {
+        logger.debug("delete()  stubAdminRequest:"+stubAdminRequest);
 
+        StubRequest stubRequest = stubAdminRequest.getRequest();
+        stubAdminService.delete(stubRequest);
+
+        ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.ACCEPTED);
+        logger.debug("delete() actual response:"+response);
+        return response;
+
+    }
 
     //delete
 

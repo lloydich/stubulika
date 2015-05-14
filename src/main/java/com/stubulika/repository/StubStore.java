@@ -39,16 +39,20 @@ public class StubStore {
         logger.debug("find() entrySet:" + storeMap.entrySet());
         logger.debug("find() key exists:"+ storeMap.containsKey(stubRequest) + ", key:"+stubRequest);
 
-        Optional <StubRequest> storedStubRequest = storeMap.keySet().stream()
-                                                .filter(t -> t.equals(stubRequest))
-                                                .filter(headersMatch(stubRequest.getHeaders()))
-                                                .findFirst();
+        Optional<StubRequest> storedStubRequest = getStubRequestOptional(stubRequest);
 
         logger.debug("find() "+storedStubRequest);
         if(storedStubRequest.isPresent()){
             return storeMap.get(storedStubRequest.get());
         }
         return null;
+    }
+
+    private Optional<StubRequest> getStubRequestOptional(StubRequest stubRequest) {
+        return storeMap.keySet().stream()
+                .filter(t -> t.equals(stubRequest))
+                .filter(headersMatch(stubRequest.getHeaders()))
+                .findFirst();
     }
 
     public List<StubAdminRequest> findAll() {
@@ -60,5 +64,15 @@ public class StubStore {
             stubs.add(stubAdminRequest);
         }
         return stubs;
+    }
+
+    public void delete(StubRequest stubRequest) {
+        logger.debug("delete() entrySet BEFORE:" + storeMap.entrySet());
+        logger.debug("delete() key exists:"+ storeMap.containsKey(stubRequest) + ", key:"+stubRequest);
+        Optional<StubRequest> storedStubRequest = getStubRequestOptional(stubRequest);
+        if(storedStubRequest.isPresent()){
+            storeMap.remove(storedStubRequest.get());
+        }
+        logger.debug("delete() entrySet AFTER:" + storeMap.entrySet());
     }
 }

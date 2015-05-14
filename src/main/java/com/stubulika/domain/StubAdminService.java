@@ -28,12 +28,19 @@ public class StubAdminService {
         if (request.getHeaders() == null) {
             request.setHeaders(new HttpHeaders());
         }
-        logger.debug("save()  stubresponse:" + request);
-        logger.debug("save()  stubresponse:" + response);
+        logger.debug("save()  stub request:" + request);
+        logger.debug("save()  stub response:" + response);
         stubRepository.save(request, response);
     }
 
     public List<StubAdminRequest> findAll() {
         return stubRepository.findAll();
+    }
+
+    public void delete(StubRequest request) {
+        if (request.getHeaders() == null) {
+            request.setHeaders(new HttpHeaders());
+        }
+        stubRepository.delete(request);
     }
 }
