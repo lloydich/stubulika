@@ -31,8 +31,8 @@ import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @IntegrationTest
 public class StubAdminControllerTest {
-    final String BASE_URL = "http://localhost:8080";
-    final String ADMIN_URL = BASE_URL+"/admin/";
+    private final String BASE_URL = "http://localhost:8080";
+    private final String ADMIN_URL = BASE_URL+"/admin/";
 
 
     @Test

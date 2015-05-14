@@ -13,19 +13,19 @@ import java.util.List;
 
 @Repository
 public class StubAdminRepository {
-    Logger logger = LoggerFactory.getLogger(StubAdminController.class);
+    private Logger logger = LoggerFactory.getLogger(StubAdminController.class);
 
-    private  StubStore stubStore;
+    private StubStore stubStore;
 
 
-
-    public @Autowired
+    public
+    @Autowired
     StubAdminRepository(StubStore stubStore) {
         this.stubStore = stubStore;
     }
 
     public void save(StubRequest request, StubResponse response) {
-            stubStore.save(request,response);
+        stubStore.save(request, response);
 
 
     }
@@ -33,7 +33,7 @@ public class StubAdminRepository {
 
     public StubResponse find(StubRequest stubRequest) {
 
-       return  stubStore.find(stubRequest);
+        return stubStore.find(stubRequest);
     }
 
 

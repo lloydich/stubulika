@@ -6,6 +6,7 @@ import com.stubulika.repository.StubAdminRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
@@ -16,6 +17,8 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.util.Arrays;
+import java.util.Enumeration;
 
 @RestController
 @RequestMapping("/endpoint")
@@ -33,44 +36,60 @@ public class StubEndpointController {
     }
 
 
-    @RequestMapping(value="/**")
+    @RequestMapping(value = "/**")
     public ResponseEntity<?> resolve(HttpServletRequest request) {
 
-        String resourcePath = getPath(request);
-
-        logger.debug("resolve() resourcePath:"+resourcePath);
+        String resourcePath = extractPath(request);
+        logger.debug("resolve() resourcePath:" + resourcePath);
         StubRequest stubRequest = new StubRequest();
         RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
-        logger.debug("resolve() requestMethod:"+requestMethod);
+        logger.debug("resolve() requestMethod:" + requestMethod);
         stubRequest.setMethod(requestMethod.name());
         stubRequest.setUrl(resourcePath);
-        String body = extractBody(request);
-        stubRequest.setBody(body);
+        stubRequest.setBody(extractBody(request));
+        stubRequest.setHeaders(extractHeaders(request));
+
         StubResponse stubResponse = stubAdminRepository.find(stubRequest);
-        logger.debug("resolve() stubResponse:"+stubResponse);
-        if(stubResponse==null){
+        logger.debug("resolve() stubResponse:" + stubResponse);
+        if (stubResponse == null) {
             return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(stubResponse.getBody(), stubResponse.getHeaders(), HttpStatus.valueOf(stubResponse.getStatus()));
     }
 
+    private HttpHeaders extractHeaders(HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+
+        Enumeration headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String key = (String) headerNames.nextElement();
+            String value = request.getHeader(key);
+
+            headers.put(key, Arrays.asList(value));
+        }
+
+        return headers;
+    }
+
     private String extractBody(HttpServletRequest request) {
         String body = null;
-                StringBuffer jb = new StringBuffer();
+        StringBuffer jb = new StringBuffer();
         String line = null;
         try {
             BufferedReader reader = request.getReader();
             while ((line = reader.readLine()) != null)
                 jb.append(line);
-        } catch (Exception e) { logger.error("extractBody() "+e); }
-        if(jb.length()>0) {
+        } catch (Exception e) {
+            logger.error("extractBody() " + e);
+        }
+        if (jb.length() > 0) {
             body = jb.toString();
         }
-        logger.debug("extractBody() "+body);
+        logger.debug("extractBody() " + body);
         return body;
     }
 
-    private String getPath(HttpServletRequest request) {
+    private String extractPath(HttpServletRequest request) {
         String path = (String) request.getAttribute(
                 HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);

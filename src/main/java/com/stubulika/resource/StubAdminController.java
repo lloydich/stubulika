@@ -34,14 +34,12 @@ public class StubAdminController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add ( @RequestBody StubAdminRequest StubAdminRequest )   {
-        logger.debug("add()  StubAdminRequest:"+StubAdminRequest);
+    ResponseEntity<?> add ( @RequestBody StubAdminRequest stubAdminRequest )   {
+        logger.debug("add()  stubAdminRequest:"+stubAdminRequest);
 
-        StubRequest stubRequest = StubAdminRequest.getRequest();
-
-        StubResponse stubResponse = StubAdminRequest.getResponse();
-        logger.debug("add()  stubresponse:" + StubAdminRequest.getResponse());
-
+        StubRequest stubRequest = stubAdminRequest.getRequest();
+        StubResponse stubResponse = stubAdminRequest.getResponse();
+        logger.debug("add()  stubRequest:" + stubRequest);
         stubAdminService.save(stubRequest, stubResponse);
 
         ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.CREATED);

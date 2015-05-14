@@ -3,9 +3,9 @@ package com.stubulika.resource;
 
 import com.google.gson.Gson;
 import com.stubulika.Application;
+import com.stubulika.domain.StubAdminService;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
-import com.stubulika.repository.StubAdminRepository;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,10 +47,10 @@ public class StubEndpointControllerTest {
     public static final int NO_CONTENT_STATUS = 204;
     Logger logger = LoggerFactory.getLogger(StubEndpointControllerTest.class);
 
-    final String BASE_URL = "http://localhost:8080/endpoint/";
+    private final String BASE_URL = "http://localhost:8080/endpoint/";
 
     @Autowired
-    private StubAdminRepository stubAdminRepository;
+    private StubAdminService stubAdminService;
 
     private static final int OK_STATUS = 200;
     private static final int CREATED_STATUS = 201;
@@ -68,7 +68,7 @@ public class StubEndpointControllerTest {
         StubRequest stubRequest = createStubRequest(RESOURCE_URL, GET_METHOD);
         StubResponse stubResponse = createStubResponse(OK_STATUS, body);
 
-        stubAdminRepository.save(stubRequest, stubResponse);
+        stubAdminService.save(stubRequest, stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
 
@@ -83,13 +83,39 @@ public class StubEndpointControllerTest {
     }
 
     @Test
+    public void shouldReturnStubResponseForGetWithHeadersFromStubEndpoint() throws Exception {
+        //given
+        String body = createJsonString("foo", "bar");
+        StubRequest stubRequest = createStubRequest(RESOURCE_URL, GET_METHOD);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept","application/json");
+        headers.set("User-Agent","Foo/bar");
+        headers.set("Connection","keep-alive");
+        headers.set("Host","localhost:8080");
+        stubRequest.setHeaders(headers);
+        StubResponse stubResponse = createStubResponse(OK_STATUS, body);
+
+        stubAdminService.save(stubRequest, stubResponse);
+
+        RestTemplate restTemplate = new TestRestTemplate();
+        HttpEntity<?> requestEntity = new HttpEntity<Object>(headers);
+
+        //when
+        ResponseEntity<String> response = restTemplate.exchange(BASE_URL + RESOURCE_URL,HttpMethod.GET, requestEntity, String.class);
+
+
+        //then
+        assertThat(response.getStatusCode().value(), equalTo(OK_STATUS));
+    }
+
+    @Test
     public void shouldReturnErrorStatusStubResponseForPostToStubEndpoint() throws Exception {
         //given
         String body = createJsonString("foo", "bar");
         StubRequest stubRequest = createStubRequest(RESOURCE_URL, POST_METHOD, body);
         StubResponse stubResponse = createStubResponse(ERROR_STATUS, NO_BODY);
 
-        stubAdminRepository.save(stubRequest, stubResponse);
+        stubAdminService.save(stubRequest, stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
         HttpEntity<?> requestEntity = new HttpEntity<Object>(body);
@@ -109,7 +135,7 @@ public class StubEndpointControllerTest {
         StubRequest stubRequest = createStubRequest(url, DELETE_METHOD);
         StubResponse stubResponse = createStubResponse(NO_CONTENT_STATUS, NO_BODY);
 
-        stubAdminRepository.save(stubRequest, stubResponse);
+        stubAdminService.save(stubRequest, stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
 
@@ -129,7 +155,7 @@ public class StubEndpointControllerTest {
         StubRequest stubRequest = createStubRequest(RESOURCE_URL + "/2", PUT_METHOD, body);
         StubResponse stubResponse = createStubResponse(OK_STATUS, NO_BODY);
 
-        stubAdminRepository.save(stubRequest, stubResponse);
+        stubAdminService.save(stubRequest, stubResponse);
 
         RestTemplate restTemplate = new TestRestTemplate();
 
