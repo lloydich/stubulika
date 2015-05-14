@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class StubAdminController {
 
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add ( @RequestBody StubAdminRequest stubAdminRequest )   {
+    ResponseEntity<?> add (@Valid @RequestBody StubAdminRequest stubAdminRequest )   {
         logger.debug("add()  stubAdminRequest:"+stubAdminRequest);
 
         StubRequest stubRequest = stubAdminRequest.getRequest();

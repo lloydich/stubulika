@@ -3,8 +3,17 @@ package com.stubulika.resource;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 public class StubAdminRequest {
+
+    @Valid
+    @NotNull
     private StubRequest request;
+
+    @Valid
+    @NotNull
     private StubResponse response;
 
     public StubAdminRequest() {

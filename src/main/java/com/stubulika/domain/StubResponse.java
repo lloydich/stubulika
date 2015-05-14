@@ -2,18 +2,21 @@ package com.stubulika.domain;
 
 import org.springframework.http.HttpHeaders;
 
+import javax.validation.constraints.NotNull;
+
 public class StubResponse {
 
-    private int status;
+    @NotNull
+    private Integer status;
     private String body;
     private HttpHeaders headers;
 
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -45,16 +48,16 @@ public class StubResponse {
 
         StubResponse that = (StubResponse) o;
 
-        if (status != that.status) return false;
         if (body != null ? !body.equals(that.body) : that.body != null) return false;
         if (headers != null ? !headers.equals(that.headers) : that.headers != null) return false;
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = status;
+        int result = status != null ? status.hashCode() : 0;
         result = 31 * result + (body != null ? body.hashCode() : 0);
         result = 31 * result + (headers != null ? headers.hashCode() : 0);
         return result;

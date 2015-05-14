@@ -1,14 +1,17 @@
 package com.stubulika.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
+
 
 public class StubRequest {
 
-    // headers
     //query strings?
 
+    @NotEmpty
     private String url;
 
+    @NotEmpty
     private String method;
 
     private String body;

@@ -31,6 +31,8 @@ import static org.springframework.test.util.MatcherAssertionErrors.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @IntegrationTest
 public class StubAdminControllerTest {
+
+    public static final int STATUS_CODE = 200;
     private final String BASE_URL = "http://localhost:8080";
     private final String ADMIN_URL = BASE_URL+"/admin/";
     private Logger logger = LoggerFactory.getLogger(StubAdminControllerTest.class);
@@ -43,7 +45,7 @@ public class StubAdminControllerTest {
         final String requestUrl = "aUrl";
         final String requestMethod = "POST";
 
-        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod);
+        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
         RestTemplate rest = new TestRestTemplate();
 
         //when
@@ -53,20 +55,70 @@ public class StubAdminControllerTest {
         assertThat( response.getStatusCode() , equalTo(HttpStatus.CREATED));
     }
 
+    @Test
+    public void shouldNotSaveAStubAdminRequestWhenNoRequestUrlSupplied() throws Exception {
+        //given
+        final String requestUrl = null;
+        final String requestMethod = "POST";
+
+        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
+        RestTemplate rest = new TestRestTemplate();
+
+        //when
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+
+        //then
+        assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+    }
+
+    @Test
+    public void shouldNotSaveAStubAdminRequestWhenNoRequestMethodSupplied() throws Exception {
+        //given
+        final String requestUrl = "url";
+        final String requestMethod = null;
+
+        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
+        RestTemplate rest = new TestRestTemplate();
+
+        //when
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+
+        //then
+        assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+    }
+
+
+    @Test
+    public void shouldNotSaveAStubAdminRequestWhenNoResponseStatusCodeSupplied() throws Exception {
+        //given
+        final String requestUrl = "url";
+        final String requestMethod = "POST";
+
+        Integer statusCode = null;
+        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, statusCode);
+        RestTemplate rest = new TestRestTemplate();
+
+        //when
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+
+        //then
+        assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+    }
+
 
 
     @Test
     public void shouldRetrieveAStubAdminRequests() throws Exception{
         //given
-        StubAdminRequest stubAdminRequest1 = createStubAdminRequest("test1", "GET");
-        StubAdminRequest stubAdminRequest2 = createStubAdminRequest("test2", "GET");
-        StubAdminRequest stubAdminRequest3 = createStubAdminRequest("test3", "POST");
+        StubAdminRequest stubAdminRequest1 = createStubAdminRequest("test1", "GET", 200);
+        StubAdminRequest stubAdminRequest2 = createStubAdminRequest("test2", "GET", 200);
+        StubAdminRequest stubAdminRequest3 = createStubAdminRequest("test3", "POST", 200);
 
         RestTemplate rest = new TestRestTemplate();
 
-        ResponseEntity<?> response1 = rest.postForEntity(ADMIN_URL, stubAdminRequest1,null);
-        ResponseEntity<?> response2 = rest.postForEntity(ADMIN_URL, stubAdminRequest2,null);
-        ResponseEntity<?> response3 = rest.postForEntity(ADMIN_URL, stubAdminRequest3,null);
+        ResponseEntity<?> response1 = rest.postForEntity(ADMIN_URL, stubAdminRequest1, null);
+        ResponseEntity<?> response2 = rest.postForEntity(ADMIN_URL, stubAdminRequest2, null);
+        ResponseEntity<?> response3 = rest.postForEntity(ADMIN_URL, stubAdminRequest3, null);
 
         //when
         ResponseEntity<List> response = rest.getForEntity(ADMIN_URL, List.class);
@@ -81,13 +133,11 @@ public class StubAdminControllerTest {
     @Test
     public void shouldDeleteStubAdminRequest() throws Exception{
         //given
-        StubAdminRequest stubAdminRequest = createStubAdminRequest("test1", "GET");
+        StubAdminRequest stubAdminRequest = createStubAdminRequest("test1", "GET", STATUS_CODE);
         RestTemplate rest = new TestRestTemplate();
         rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
 
         //when
-
-
         HttpEntity<?> requestEntity = new HttpEntity<Object>(stubAdminRequest, new HttpHeaders());
 
         //when
@@ -104,13 +154,13 @@ public class StubAdminControllerTest {
 
     }
 
-    private StubAdminRequest createStubAdminRequest(String url, String method) {
+    private StubAdminRequest createStubAdminRequest(String url, String method, Integer statusCode) {
         StubRequest stubRequest = new StubRequest();
         stubRequest.setUrl(url);
         stubRequest.setMethod(method);
 
         StubResponse stubResponse = new StubResponse();
-        stubResponse.setStatus(200);
+        stubResponse.setStatus(statusCode);
 
         HashMap<String, Object> responseBody = new HashMap<>();
         responseBody.put("foo", "bar");
