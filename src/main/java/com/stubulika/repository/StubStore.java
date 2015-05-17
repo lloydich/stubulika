@@ -2,7 +2,7 @@ package com.stubulika.repository;
 
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
-import com.stubulika.resource.StubAdminRequest;
+import com.stubulika.resource.StubWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -55,13 +55,13 @@ public class StubStore {
                 .findFirst();
     }
 
-    public List<StubAdminRequest> findAll() {
-        List<StubAdminRequest> stubs = new ArrayList<>();
+    public List<StubWrapper> findAll() {
+        List<StubWrapper> stubs = new ArrayList<>();
         for (StubRequest stubRequest : storeMap.keySet()) {
-            StubAdminRequest stubAdminRequest = new StubAdminRequest();
-            stubAdminRequest.setRequest(stubRequest);
-            stubAdminRequest.setResponse(storeMap.get(stubRequest));
-            stubs.add(stubAdminRequest);
+            StubWrapper stubWrapper = new StubWrapper();
+            stubWrapper.setRequest(stubRequest);
+            stubWrapper.setResponse(storeMap.get(stubRequest));
+            stubs.add(stubWrapper);
         }
         return stubs;
     }

@@ -3,7 +3,7 @@ package com.stubulika.repository;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
 import com.stubulika.resource.StubAdminController;
-import com.stubulika.resource.StubAdminRequest;
+import com.stubulika.resource.StubWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class StubRepository {
     }
 
 
-    public List<StubAdminRequest> findAll() {
+    public List<StubWrapper> findAll() {
         return stubStore.findAll();
     }
 

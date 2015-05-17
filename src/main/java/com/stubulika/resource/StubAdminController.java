@@ -26,20 +26,20 @@ public class StubAdminController {
     private StubAdminService stubAdminService;
     
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity <List<StubAdminRequest>> get() {
-        List<StubAdminRequest> stubs = stubAdminService.findAll();
-        ResponseEntity<List<StubAdminRequest>>  response = new ResponseEntity<>(stubs, HttpStatus.OK);
+    public ResponseEntity <List<StubWrapper>> get() {
+        List<StubWrapper> stubs = stubAdminService.findAll();
+        ResponseEntity<List<StubWrapper>>  response = new ResponseEntity<>(stubs, HttpStatus.OK);
         logger.debug("get() actual response:"+response);
         return response;
     }
 
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add (@Valid @RequestBody StubAdminRequest stubAdminRequest )   {
-        logger.debug("add()  stubAdminRequest:"+stubAdminRequest);
+    ResponseEntity<?> add (@Valid @RequestBody StubWrapper stubWrapper)   {
+        logger.debug("add()  stubAdminRequest:"+ stubWrapper);
 
-        StubRequest stubRequest = stubAdminRequest.getRequest();
-        StubResponse stubResponse = stubAdminRequest.getResponse();
+        StubRequest stubRequest = stubWrapper.getRequest();
+        StubResponse stubResponse = stubWrapper.getResponse();
         stubAdminService.save(stubRequest, stubResponse);
 
         ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.CREATED);
@@ -50,10 +50,10 @@ public class StubAdminController {
 
 
     @RequestMapping(method = RequestMethod.DELETE)
-    ResponseEntity<?> delete ( @RequestBody StubAdminRequest stubAdminRequest )   {
-        logger.debug("delete()  stubAdminRequest:"+stubAdminRequest);
+    ResponseEntity<?> delete ( @RequestBody StubWrapper stubWrapper)   {
+        logger.debug("delete()  stubAdminRequest:"+ stubWrapper);
 
-        StubRequest stubRequest = stubAdminRequest.getRequest();
+        StubRequest stubRequest = stubWrapper.getRequest();
         stubAdminService.delete(stubRequest);
 
         ResponseEntity<Object> response = new ResponseEntity<>(null, null, HttpStatus.ACCEPTED);

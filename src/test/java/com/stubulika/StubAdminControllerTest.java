@@ -3,7 +3,7 @@ package com.stubulika;
 import com.google.gson.Gson;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
-import com.stubulika.resource.StubAdminRequest;
+import com.stubulika.resource.StubWrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -45,11 +45,11 @@ public class StubAdminControllerTest {
         final String requestUrl = "aUrl";
         final String requestMethod = "POST";
 
-        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest,null);
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper,null);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.CREATED));
@@ -61,11 +61,11 @@ public class StubAdminControllerTest {
         final String requestUrl = null;
         final String requestMethod = "POST";
 
-        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
@@ -77,11 +77,11 @@ public class StubAdminControllerTest {
         final String requestUrl = "url";
         final String requestMethod = null;
 
-        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
@@ -95,11 +95,11 @@ public class StubAdminControllerTest {
         final String requestMethod = "POST";
 
         Integer statusCode = null;
-        StubAdminRequest stubAdminRequest = createStubAdminRequest(requestUrl, requestMethod, statusCode);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, statusCode);
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
@@ -110,13 +110,13 @@ public class StubAdminControllerTest {
     @Test
     public void shouldRetrieveAStubAdminRequests() throws Exception{
         //given
-        StubAdminRequest stubAdminRequest1 = createStubAdminRequest("test1", "GET", 200);
-        StubAdminRequest stubAdminRequest2 = createStubAdminRequest("test2", "GET", 200);
-        StubAdminRequest stubAdminRequest3 = createStubAdminRequest("test3", "POST", 200);
+        StubWrapper stubWrapper1 = createStubAdminRequest("test1", "GET", 200);
+        StubWrapper stubAdminRequest2 = createStubAdminRequest("test2", "GET", 200);
+        StubWrapper stubAdminRequest3 = createStubAdminRequest("test3", "POST", 200);
 
         RestTemplate rest = new TestRestTemplate();
 
-        ResponseEntity<?> response1 = rest.postForEntity(ADMIN_URL, stubAdminRequest1, null);
+        ResponseEntity<?> response1 = rest.postForEntity(ADMIN_URL, stubWrapper1, null);
         ResponseEntity<?> response2 = rest.postForEntity(ADMIN_URL, stubAdminRequest2, null);
         ResponseEntity<?> response3 = rest.postForEntity(ADMIN_URL, stubAdminRequest3, null);
 
@@ -133,12 +133,12 @@ public class StubAdminControllerTest {
     @Test
     public void shouldDeleteStubAdminRequest() throws Exception{
         //given
-        StubAdminRequest stubAdminRequest = createStubAdminRequest("test1", "GET", STATUS_CODE);
+        StubWrapper stubWrapper = createStubAdminRequest("test1", "GET", STATUS_CODE);
         RestTemplate rest = new TestRestTemplate();
-        rest.postForEntity(ADMIN_URL, stubAdminRequest, null);
+        rest.postForEntity(ADMIN_URL, stubWrapper, null);
 
         //when
-        HttpEntity<?> requestEntity = new HttpEntity<Object>(stubAdminRequest, new HttpHeaders());
+        HttpEntity<?> requestEntity = new HttpEntity<Object>(stubWrapper, new HttpHeaders());
 
         //when
         ResponseEntity<String> deleteResponse = rest.exchange(ADMIN_URL, HttpMethod.DELETE, requestEntity, String.class);
@@ -154,7 +154,7 @@ public class StubAdminControllerTest {
 
     }
 
-    private StubAdminRequest createStubAdminRequest(String url, String method, Integer statusCode) {
+    private StubWrapper createStubAdminRequest(String url, String method, Integer statusCode) {
         StubRequest stubRequest = new StubRequest();
         stubRequest.setUrl(url);
         stubRequest.setMethod(method);
@@ -172,9 +172,9 @@ public class StubAdminControllerTest {
         stubResponse.setHeaders(headers);
 
 
-        StubAdminRequest stubAdminRequest = new StubAdminRequest();
-        stubAdminRequest.setRequest(stubRequest);
-        stubAdminRequest.setResponse(stubResponse);
-        return stubAdminRequest;
+        StubWrapper stubWrapper = new StubWrapper();
+        stubWrapper.setRequest(stubRequest);
+        stubWrapper.setResponse(stubResponse);
+        return stubWrapper;
     }
 }

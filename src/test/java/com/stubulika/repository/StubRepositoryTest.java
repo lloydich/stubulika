@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.stubulika.Application;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
-import com.stubulika.resource.StubAdminRequest;
+import com.stubulika.resource.StubWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -247,14 +247,14 @@ public class StubRepositoryTest {
         storeMap.put(stubRequest3,stubResponse3);
 
         //when
-        List<StubAdminRequest> actual = stubRepo.findAll();
+        List<StubWrapper> actual = stubRepo.findAll();
 
 
         //then
         assertThat(actual.size(), equalTo(3));
-        assertThat(actual.contains(new StubAdminRequest(stubRequest1, stubResponse1)), equalTo(true));
-        assertThat(actual.contains(new StubAdminRequest(stubRequest2, stubResponse2)), equalTo(true));
-        assertThat(actual.contains(new StubAdminRequest(stubRequest3, stubResponse3)), equalTo(true));
+        assertThat(actual.contains(new StubWrapper(stubRequest1, stubResponse1)), equalTo(true));
+        assertThat(actual.contains(new StubWrapper(stubRequest2, stubResponse2)), equalTo(true));
+        assertThat(actual.contains(new StubWrapper(stubRequest3, stubResponse3)), equalTo(true));
 //        List<StubAdminRequest> stubAdminRequests = new ArrayList<>();
 //        stubAdminRequests.add(new StubAdminRequest(stubRequest1, stubResponse1));
 //        assertThat(actual, containsInAnyOrder(stubAdminRequests));

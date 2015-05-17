@@ -1,7 +1,7 @@
 package com.stubulika.domain;
 
 import com.stubulika.repository.StubRepository;
-import com.stubulika.resource.StubAdminRequest;
+import com.stubulika.resource.StubWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class StubAdminService {
         stubRepository.save(request, response);
     }
 
-    public List<StubAdminRequest> findAll() {
+    public List<StubWrapper> findAll() {
         return stubRepository.findAll();
     }
 

@@ -6,7 +6,7 @@ import com.stubulika.domain.StubResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class StubAdminRequest {
+public class StubWrapper {
 
     @Valid
     @NotNull
@@ -16,10 +16,10 @@ public class StubAdminRequest {
     @NotNull
     private StubResponse response;
 
-    public StubAdminRequest() {
+    public StubWrapper() {
     }
 
-    public StubAdminRequest(StubRequest request, StubResponse response) {
+    public StubWrapper(StubRequest request, StubResponse response) {
         this.request = request;
         this.response = response;
     }
@@ -51,9 +51,9 @@ public class StubAdminRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StubAdminRequest)) return false;
+        if (!(o instanceof StubWrapper)) return false;
 
-        StubAdminRequest that = (StubAdminRequest) o;
+        StubWrapper that = (StubWrapper) o;
 
         if (request != null ? !request.equals(that.request) : that.request != null) return false;
         if (response != null ? !response.equals(that.response) : that.response != null) return false;
