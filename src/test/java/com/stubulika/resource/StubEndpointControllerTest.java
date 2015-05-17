@@ -61,10 +61,11 @@ public class StubEndpointControllerTest {
     private Gson gson = new Gson();
 
     @Test
-    public void shouldReturnStubResponseForGetFromStubEndpoint() throws Exception {
+    public void shouldReturnStubResponseForGetWithQueryParamFromStubEndpoint() throws Exception {
         //given
         String body = createJsonString("foo", "bar");
-        StubRequest stubRequest = createStubRequest(RESOURCE_URL, GET_METHOD);
+        String queryParam = "?foo=bar";
+        StubRequest stubRequest = createStubRequest(RESOURCE_URL+ queryParam, GET_METHOD);
         StubResponse stubResponse = createStubResponse(OK_STATUS, body);
 
         stubAdminService.save(stubRequest, stubResponse);
@@ -72,7 +73,7 @@ public class StubEndpointControllerTest {
         RestTemplate restTemplate = new TestRestTemplate();
 
         //when
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + RESOURCE_URL, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + RESOURCE_URL+queryParam, String.class);
 
         //then
         logger.debug("shouldReturnStubResponseForGetFromStubEndpoint() response:" + response);

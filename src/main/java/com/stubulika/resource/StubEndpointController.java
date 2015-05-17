@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class StubEndpointController {
     @RequestMapping(value = "/**")
     public ResponseEntity<?> resolve(HttpServletRequest request) {
 
-        String resourcePath = extractPath(request);
+        String resourcePath = extractPathWithQueryParams(request);
         logger.debug("resolve() resourcePath:" + resourcePath);
         StubRequest stubRequest = new StubRequest();
         RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
@@ -89,14 +90,18 @@ public class StubEndpointController {
         return body;
     }
 
-    private String extractPath(HttpServletRequest request) {
+    private String extractPathWithQueryParams(HttpServletRequest request) {
         String path = (String) request.getAttribute(
                 HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
         AntPathMatcher apm = new AntPathMatcher();
         // on "/properties/foo/bar", resourcePath contains "foo/bar"
-        return apm.extractPathWithinPattern(bestMatchPattern, path);
+        String endpointPath = apm.extractPathWithinPattern(bestMatchPattern, path);
+        if(!StringUtils.isEmpty(request.getQueryString())){
+            endpointPath = endpointPath + "?" + request.getQueryString();
+        }
+        return endpointPath;
     }
 
 }
