@@ -1,7 +1,10 @@
 package com.stubulika.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
+
+import java.time.LocalDateTime;
 
 
 public class StubRequest {
@@ -17,6 +20,17 @@ public class StubRequest {
     private String body;
 
     private HttpHeaders headers;
+
+    @JsonIgnore
+    private LocalDateTime created;
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
 
     public String getUrl() {
         return url;
@@ -80,6 +94,7 @@ public class StubRequest {
                 ", method='" + method + '\'' +
                 ", body='" + body + '\'' +
                 ", headers=" + headers +
+                ", created=" + created +
                 '}';
     }
 }

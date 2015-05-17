@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -28,6 +29,7 @@ public class StubAdminService {
         if (request.getHeaders() == null) {
             request.setHeaders(new HttpHeaders());
         }
+        request.setCreated(LocalDateTime.now());
         logger.debug("save()  stub request:" + request);
         logger.debug("save()  stub response:" + response);
         stubRepository.save(request, response);

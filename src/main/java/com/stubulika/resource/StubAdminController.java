@@ -26,7 +26,7 @@ public class StubAdminController {
     private StubAdminService stubAdminService;
     
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity <List<StubWrapper>> get() {
+    public ResponseEntity <List<StubWrapper>> getAll() {
         List<StubWrapper> stubs = stubAdminService.findAll();
         ResponseEntity<List<StubWrapper>>  response = new ResponseEntity<>(stubs, HttpStatus.OK);
         logger.debug("get() actual response:"+response);
