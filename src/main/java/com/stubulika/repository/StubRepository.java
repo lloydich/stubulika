@@ -26,13 +26,10 @@ public class StubRepository {
 
     public void save(StubRequest request, StubResponse response) {
         stubStore.save(request, response);
-
-
     }
 
 
     public StubResponse find(StubRequest stubRequest) {
-
         return stubStore.find(stubRequest);
     }
 

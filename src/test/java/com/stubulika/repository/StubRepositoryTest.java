@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -283,6 +284,7 @@ public class StubRepositoryTest {
         stubRequest.setUrl(url);
         stubRequest.setMethod(method);
         stubRequest.setHeaders(headers);
+        stubRequest.setCreated(LocalDateTime.now());
         return stubRequest;
     }
 

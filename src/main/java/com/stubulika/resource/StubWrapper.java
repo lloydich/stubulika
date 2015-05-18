@@ -1,5 +1,6 @@
 package com.stubulika.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
 
@@ -8,10 +9,12 @@ import javax.validation.constraints.NotNull;
 
 public class StubWrapper {
 
+    @JsonView(View.Summary.class)
     @Valid
     @NotNull
     private StubRequest request;
 
+    @JsonView(View.Summary.class)
     @Valid
     @NotNull
     private StubResponse response;

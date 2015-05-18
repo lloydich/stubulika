@@ -1,11 +1,16 @@
 package com.stubulika.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.stubulika.resource.View;
 import org.springframework.http.HttpHeaders;
 
 import javax.validation.constraints.NotNull;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StubResponse {
 
+    @JsonView(View.Summary.class)
     @NotNull
     private Integer status;
     private String body;

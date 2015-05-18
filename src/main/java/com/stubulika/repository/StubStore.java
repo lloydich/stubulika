@@ -9,10 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Repository
@@ -23,14 +21,22 @@ public class StubStore {
     @Resource
     private Map<StubRequest, StubResponse> storeMap;
 
+    public static Predicate<StubRequest> queryHeadersNullSavedNot(HttpHeaders queryHeaders) {
+        return p -> (p.getHeaders()!=null && queryHeaders ==null);
+    }
 
-    public static Predicate<StubRequest> headersMatch(HttpHeaders headers) {
-        return p -> (p.getHeaders() == null && headers == null) ||
-                ((headers!=null && p.getHeaders()!=null) && headers.entrySet().containsAll(p.getHeaders().entrySet()));
+    public static Predicate<StubRequest> headersMatch(HttpHeaders queryHeaders) {
+        Predicate<StubRequest> headersAreEqualPredicate = p ->
+                (p.getHeaders() == null && queryHeaders == null) ||
+                (p.getHeaders() == null && queryHeaders != null) ||
+                ((queryHeaders != null && p.getHeaders() != null) && queryHeaders.entrySet().containsAll(p.getHeaders().entrySet()));
+       System.out.println("headersAreEqualPredicate:"+headersAreEqualPredicate);
+       return queryHeadersNullSavedNot(queryHeaders).negate().and(headersAreEqualPredicate);
     }
 
 
     public  void save(StubRequest request, StubResponse response) {
+        request.setCreated(LocalDateTime.now());
         storeMap.put(request, response);
         logger.debug("save() after - entrySet:" + storeMap.entrySet());
     }
@@ -63,6 +69,7 @@ public class StubStore {
             stubWrapper.setResponse(storeMap.get(stubRequest));
             stubs.add(stubWrapper);
         }
+        Collections.sort(stubs, (StubWrapper s1, StubWrapper s2) -> s1.getRequest().getCreated().compareTo(s2.getRequest().getCreated()));
         return stubs;
     }
 

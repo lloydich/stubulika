@@ -1,5 +1,6 @@
 package com.stubulika.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.stubulika.domain.StubAdminService;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
@@ -24,7 +25,13 @@ public class StubAdminController {
 
     @Autowired
     private StubAdminService stubAdminService;
-    
+
+    @JsonView(View.Summary.class)
+    @RequestMapping(method = RequestMethod.GET, value="/summary")
+    public ResponseEntity <List<StubWrapper>> getAllAsSummary() {
+        return getAll();
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity <List<StubWrapper>> getAll() {
         List<StubWrapper> stubs = stubAdminService.findAll();
@@ -32,7 +39,6 @@ public class StubAdminController {
         logger.debug("get() actual response:"+response);
         return response;
     }
-
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> add (@Valid @RequestBody StubWrapper stubWrapper)   {

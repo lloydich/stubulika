@@ -1,0 +1,5 @@
+1) File import
+2) Some form of persistance
+3) latency
+4) hamcrest  StubRepositoryTest    shouldRetrieveAllStubAdminRequests
+5) Builder pattern for tests

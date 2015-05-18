@@ -1,19 +1,23 @@
 package com.stubulika.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.stubulika.resource.View;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StubRequest {
 
-    //query strings?
 
+    @JsonView(View.Summary.class)
     @NotEmpty
     private String url;
 
+    @JsonView(View.Summary.class)
     @NotEmpty
     private String method;
 
