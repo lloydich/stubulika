@@ -3,6 +3,7 @@ package com.stubulika.repository;
 import com.google.gson.Gson;
 import com.stubulika.Application;
 import com.stubulika.domain.StubRequest;
+import com.stubulika.domain.StubRequestBuilder;
 import com.stubulika.domain.StubResponse;
 import com.stubulika.resource.StubWrapper;
 import org.slf4j.Logger;
@@ -48,7 +49,10 @@ public class StubRepositoryTest {
     @Test
     public void shouldSaveStubRequestResponse() throws Exception {
         //given
-        StubRequest stubRequest = createStubRequest(TEST_URL, TEST_METHOD, null);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         //when
@@ -61,12 +65,13 @@ public class StubRepositoryTest {
     }
 
 
-
-
     @Test
-    public void shouldRetrieveStubResponse(){
+    public void shouldRetrieveStubResponse() {
         //given
-        StubRequest stubRequest = createStubRequest(TEST_URL, TEST_METHOD, null);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .build();
 
         StubResponse stubResponse = createStubResponse("foo", "bar");
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -84,19 +89,29 @@ public class StubRepositoryTest {
     }
 
     @Test
-    public void shouldRetrieveStubResponseIfHeadersInSavedStubRequestExistInQueriedStubRequest(){
+    public void shouldRetrieveStubResponseIfHeadersInSavedStubRequestExistInQueriedStubRequest() {
         //given
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("Accept", Arrays.asList("application/json"));
-        StubRequest savedStubRequest = createStubRequest(TEST_URL, TEST_METHOD, headers);
+        HttpHeaders headers = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/json"));
+        }};
+        StubRequest savedStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(headers)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         storeMap.put(savedStubRequest, stubResponse);
 
-        HttpHeaders queryHeaders = new HttpHeaders();
-        queryHeaders.put("Accept", Arrays.asList("application/json"));
-        queryHeaders.put("Connection", Arrays.asList("keep-alive"));
-        StubRequest queryStubRequest = createStubRequest(TEST_URL, TEST_METHOD, queryHeaders);
+        HttpHeaders queryHeaders = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/json"));
+            put("Connection", Arrays.asList("keep-alive"));
+        }};
+        StubRequest queryStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(queryHeaders)
+                .build();
 
 
         //when
@@ -108,19 +123,29 @@ public class StubRepositoryTest {
     }
 
     @Test
-    public void shouldNotRetrieveStubResponseIfHeadersInSavedStubRequestDoNotExistInQueriedStubRequest(){
+    public void shouldNotRetrieveStubResponseIfHeadersInSavedStubRequestDoNotExistInQueriedStubRequest() {
         //given
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("Accept", Arrays.asList("application/xml"));
-        StubRequest savedStubRequest = createStubRequest(TEST_URL, TEST_METHOD, headers);
+        HttpHeaders headers = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/xml"));
+        }};
+        StubRequest savedStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(headers)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         storeMap.put(savedStubRequest, stubResponse);
 
-        HttpHeaders queryHeaders = new HttpHeaders();
-        queryHeaders.put("Accept", Arrays.asList("application/json"));
-        queryHeaders.put("Connection", Arrays.asList("keep-alive"));
-        StubRequest queryStubRequest = createStubRequest(TEST_URL, TEST_METHOD, queryHeaders);
+        HttpHeaders queryHeaders = new HttpHeaders(){{
+                put("Accept", Arrays.asList("application/json"));
+                put("Connection", Arrays.asList("keep-alive"));
+            }};
+        StubRequest queryStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(queryHeaders)
+                .build();
 
 
         //when
@@ -132,20 +157,30 @@ public class StubRepositoryTest {
     }
 
     @Test
-    public void shouldNotRetrieveStubResponseIfHeadersInQueriedStubRequestDoNotExistInSavedStubRequest(){
+    public void shouldNotRetrieveStubResponseIfHeadersInQueriedStubRequestDoNotExistInSavedStubRequest() {
         //given
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("Accept", Arrays.asList("application/json"));
-        headers.put("Connection", Arrays.asList("keep-alive"));
-        StubRequest savedStubRequest = createStubRequest(TEST_URL, TEST_METHOD, headers);
+        HttpHeaders headers = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/json"));
+            put("Connection", Arrays.asList("keep-alive"));
+        }};
+        StubRequest savedStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(headers)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         storeMap.put(savedStubRequest, stubResponse);
 
-        HttpHeaders queryHeaders = new HttpHeaders();
-        queryHeaders.put("Accept", Arrays.asList("application/xml"));
+        HttpHeaders queryHeaders = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/xml"));
+        }};
 
-        StubRequest queryStubRequest = createStubRequest(TEST_URL, TEST_METHOD, queryHeaders);
+        StubRequest queryStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(queryHeaders)
+                .build();
 
 
         //when
@@ -157,17 +192,25 @@ public class StubRepositoryTest {
     }
 
     @Test
-    public void shouldNotRetrieveStubResponseIfHeadersInSavedStubRequestButNoneInQueriedStubRequest(){
+    public void shouldNotRetrieveStubResponseIfHeadersInSavedStubRequestButNoneInQueriedStubRequest() {
         //given
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("Accept", Arrays.asList("application/xml"));
-        StubRequest savedStubRequest = createStubRequest(TEST_URL, TEST_METHOD, headers);
+        HttpHeaders headers = new HttpHeaders() {{
+            put("Accept", Arrays.asList("application/xml"));
+        }};
+        StubRequest savedStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(headers)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         storeMap.put(savedStubRequest, stubResponse);
 
-        HttpHeaders queryHeaders = null;
-        StubRequest queryStubRequest = createStubRequest(TEST_URL, TEST_METHOD, queryHeaders);
+        StubRequest queryStubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(null)
+                .build();
 
 
         //when
@@ -181,7 +224,11 @@ public class StubRepositoryTest {
     @Test
     public void shouldNotSaveAgainSameStubRequestResponseWhenSavedPreviously() throws Exception {
         //given
-        StubRequest stubRequest = createStubRequest(TEST_URL, TEST_METHOD, null);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(null)
+                .build();
         StubResponse stubResponse = createStubResponse("foo", "bar");
 
         //when
@@ -189,15 +236,19 @@ public class StubRepositoryTest {
         stubRepo.save(stubRequest, stubResponse);
 
         //then
-        assertThat(storeMap.size(),equalTo(1));
+        assertThat(storeMap.size(), equalTo(1));
     }
 
     @Test
     public void shouldOverwriteStubResponseWhenSameStubRequestSavedPreviously() throws Exception {
         //given
-        StubRequest stubRequest = createStubRequest(TEST_URL, TEST_METHOD, null);
-        StubResponse stubResponse =  createStubResponse("foo", "aBody");
-        StubResponse stubResponse2 =  createStubResponse("foo", "aBody2", 500);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(TEST_URL)
+                .withMethod(TEST_METHOD)
+                .withHeaders(null)
+                .build();
+        StubResponse stubResponse = createStubResponse("foo", "aBody");
+        StubResponse stubResponse2 = createStubResponse("foo", "aBody2", 500);
 
         //when
         stubRepo.save(stubRequest, stubResponse);
@@ -205,7 +256,7 @@ public class StubRepositoryTest {
 
 
         //then
-        assertThat(storeMap.size(),equalTo(1));
+        assertThat(storeMap.size(), equalTo(1));
 
         StubResponse actual = storeMap.get(stubRequest);
         assertThat(actual, equalTo(stubResponse2));
@@ -213,12 +264,19 @@ public class StubRepositoryTest {
     }
 
 
-
     @Test
     public void shouldSaveMoreThanOneStubRequestResponse() throws Exception {
         //given
-        StubRequest stubRequest1 = createStubRequest("aUrl1", "GET", null);
-        StubRequest stubRequest2 = createStubRequest("aUrl2", "GET", null);
+        StubRequest stubRequest1 = new StubRequestBuilder()
+                .withUrl("aUrl1")
+                .withMethod("GET")
+                .withHeaders(null)
+                .build();
+        StubRequest stubRequest2 = new StubRequestBuilder()
+                .withUrl("aUrl2")
+                .withMethod("GET")
+                .withHeaders(null)
+                .build();
         StubResponse stubResponse1 = createStubResponse("foo", "aBody1");
         StubResponse stubResponse2 = createStubResponse("foo", "aBody2");
 
@@ -229,23 +287,37 @@ public class StubRepositoryTest {
 
 
         //then
-        assertThat(storeMap.size(),equalTo(2));
+        assertThat(storeMap.size(), equalTo(2));
     }
 
     @Test
-    public void shouldRetrieveAllStubAdminRequests(){
+    public void shouldRetrieveAllStubAdminRequests() {
         //given
-        StubRequest stubRequest1 = createStubRequest("aUrl1","aMethod", null);
+        StubRequest stubRequest1 = new StubRequestBuilder()
+                .withUrl("aUrl1")
+                .withMethod("aMethod")
+                .withCreated(LocalDateTime.now())
+                .build();
+
         StubResponse stubResponse1 = createStubResponse("responseKey1", "responseValue1");
-        storeMap.put(stubRequest1,stubResponse1);
+        storeMap.put(stubRequest1, stubResponse1);
 
-        StubRequest stubRequest2 = createStubRequest("aUrl2","aMethod", null);
+        StubRequest stubRequest2 = new StubRequestBuilder()
+                .withUrl("aUrl2")
+                .withMethod("aMethod")
+                .withCreated(LocalDateTime.now())
+                .build();
+
         StubResponse stubResponse2 = createStubResponse("responseKey2", "responseValue2");
-        storeMap.put(stubRequest2,stubResponse2);
+        storeMap.put(stubRequest2, stubResponse2);
 
-        StubRequest stubRequest3 = createStubRequest("aUrl3","aMethod", null);
+        StubRequest stubRequest3 = new StubRequestBuilder()
+                .withUrl("aUrl3")
+                .withMethod("aMethod")
+                .withCreated(LocalDateTime.now())
+                .build();
         StubResponse stubResponse3 = createStubResponse("responseKey3", "responseValue3");
-        storeMap.put(stubRequest3,stubResponse3);
+        storeMap.put(stubRequest3, stubResponse3);
 
         //when
         List<StubWrapper> actual = stubRepo.findAll();
@@ -262,8 +334,8 @@ public class StubRepositoryTest {
 
     }
 
-    private StubResponse createStubResponse(String bodyJsonKey, String bodyJsonValue){
-           return createStubResponse( bodyJsonKey,  bodyJsonValue, 200);
+    private StubResponse createStubResponse(String bodyJsonKey, String bodyJsonValue) {
+        return createStubResponse(bodyJsonKey, bodyJsonValue, 200);
     }
 
     private StubResponse createStubResponse(String bodyJsonKey, String bodyJsonValue, int status) {
@@ -279,13 +351,13 @@ public class StubRepositoryTest {
         return stubResponse;
     }
 
-    private StubRequest createStubRequest(String url, String method, HttpHeaders headers) {
-        StubRequest stubRequest = new StubRequest();
-        stubRequest.setUrl(url);
-        stubRequest.setMethod(method);
-        stubRequest.setHeaders(headers);
-        stubRequest.setCreated(LocalDateTime.now());
-        return stubRequest;
-    }
+//    private StubRequest createStubRequest(String url, String method, HttpHeaders headers) {
+//        StubRequest stubRequest = new StubRequest();
+//        stubRequest.setUrl(url);
+//        stubRequest.setMethod(method);
+//        stubRequest.setHeaders(headers);
+//        stubRequest.setCreated(LocalDateTime.now());
+//        return stubRequest;
+//    }
 
 }

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.stubulika.Application;
 import com.stubulika.domain.StubAdminService;
 import com.stubulika.domain.StubRequest;
+import com.stubulika.domain.StubRequestBuilder;
 import com.stubulika.domain.StubResponse;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -65,7 +66,10 @@ public class StubEndpointControllerTest {
         //given
         String body = createJsonString("foo", "bar");
         String queryParam = "?foo=bar";
-        StubRequest stubRequest = createStubRequest(RESOURCE_URL+ queryParam, GET_METHOD);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(RESOURCE_URL + queryParam)
+                .withMethod(GET_METHOD)
+                .build();
         StubResponse stubResponse = createStubResponse(OK_STATUS, body);
 
         stubAdminService.save(stubRequest, stubResponse);
@@ -86,7 +90,10 @@ public class StubEndpointControllerTest {
     public void shouldReturnStubResponseForGetWithHeadersFromStubEndpoint() throws Exception {
         //given
         String body = createJsonString("foo", "bar");
-        StubRequest stubRequest = createStubRequest(RESOURCE_URL, GET_METHOD);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(RESOURCE_URL)
+                .withMethod(GET_METHOD)
+                .build();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept","application/json");
         headers.set("User-Agent","Foo/bar");
@@ -112,7 +119,11 @@ public class StubEndpointControllerTest {
     public void shouldReturnErrorStatusStubResponseForPostToStubEndpoint() throws Exception {
         //given
         String body = createJsonString("foo", "bar");
-        StubRequest stubRequest = createStubRequest(RESOURCE_URL, POST_METHOD, body);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(RESOURCE_URL)
+                .withMethod(POST_METHOD)
+                .withBody(body)
+                .build();
         StubResponse stubResponse = createStubResponse(ERROR_STATUS, NO_BODY);
 
         stubAdminService.save(stubRequest, stubResponse);
@@ -132,7 +143,10 @@ public class StubEndpointControllerTest {
     public void shouldReturnAStatusStubResponseForDeleteOnStubEndpoint() throws Exception {
         //given
         String url = RESOURCE_URL + "/1";
-        StubRequest stubRequest = createStubRequest(url, DELETE_METHOD);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(url)
+                .withMethod(DELETE_METHOD)
+                .build();
         StubResponse stubResponse = createStubResponse(ACCEPTED_STATUS, NO_BODY);
 
         stubAdminService.save(stubRequest, stubResponse);
@@ -152,7 +166,11 @@ public class StubEndpointControllerTest {
     public void shouldReturnCreatedStatusStubResponseForPutToStubEndpoint() throws Exception {
         //given
         String body = createJsonString("foo", "bar");
-        StubRequest stubRequest = createStubRequest(RESOURCE_URL + "/2", PUT_METHOD, body);
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(RESOURCE_URL + "/2")
+                .withMethod(PUT_METHOD)
+                .withBody(body)
+                .build();
         StubResponse stubResponse = createStubResponse(OK_STATUS, NO_BODY);
 
         stubAdminService.save(stubRequest, stubResponse);
@@ -199,19 +217,6 @@ public class StubEndpointControllerTest {
         return stubResponse;
     }
 
-
-    private StubRequest createStubRequest(String url, String method, String body) {
-        StubRequest stubRequest = createStubRequest(url, method);
-        stubRequest.setBody(body);
-        return stubRequest;
-    }
-
-    private StubRequest createStubRequest(String url, String method) {
-        StubRequest stubRequest = new StubRequest();
-        stubRequest.setUrl(url);
-        stubRequest.setMethod(method);
-        return stubRequest;
-    }
 
     private String createJsonString(String key, String value) {
         HashMap<String, Object> bodyMap = new HashMap<>();

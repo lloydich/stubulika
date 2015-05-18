@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.stubulika.domain.StubRequest;
+import com.stubulika.domain.StubRequestBuilder;
 import com.stubulika.domain.StubResponse;
 import com.stubulika.resource.StubWrapper;
 import com.stubulika.resource.View;
@@ -204,10 +205,11 @@ public class StubAdminControllerTest {
     }
 
     private StubWrapper createStubAdminRequest(String url, String method, Integer statusCode) {
-        StubRequest stubRequest = new StubRequest();
-        stubRequest.setUrl(url);
-        stubRequest.setMethod(method);
-        stubRequest.setHeaders(new HttpHeaders());
+        StubRequest stubRequest = new StubRequestBuilder()
+                .withUrl(url)
+                .withMethod(method)
+                .withHeaders(new HttpHeaders())
+                .build();
 
         StubResponse stubResponse = new StubResponse();
         stubResponse.setStatus(statusCode);

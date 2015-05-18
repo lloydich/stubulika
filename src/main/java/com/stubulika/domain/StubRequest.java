@@ -13,6 +13,17 @@ import java.time.LocalDateTime;
 public class StubRequest {
 
 
+    public StubRequest() {
+    }
+
+    public StubRequest(String url, String method, String body, HttpHeaders headers, LocalDateTime created) {
+        this.url = url;
+        this.method = method;
+        this.body = body;
+        this.headers = headers;
+        this.created = created;
+    }
+
     @JsonView(View.Summary.class)
     @NotEmpty
     private String url;
