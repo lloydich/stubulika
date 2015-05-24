@@ -1,6 +1,0 @@
-1) File import
-2) Some form of persistance
-3) latency
-4) hamcrest  StubRepositoryTest    shouldRetrieveAllStubAdminRequests
-5) admin page for inserting data via forms
-6) some form of hatoeas for for admin/endpoints to point to endpoint
