@@ -14,7 +14,8 @@
 
 ---------------------------------------
 ####GET XML
-{
+```json
+{ 
    "request":{
       "url":"test",
       "method":"GET"
@@ -28,11 +29,13 @@
       },
       "body":"<xml><to>You</to><from>Me</from><heading>Message</heading><body>This is some xml</body></xml>"
    }
-}
+} 
+```
 
 ---------------------------------------
 ####GET JSON
-{
+```json
+{ 
    "request":{
       "url":"test",
       "method":"GET"
@@ -47,9 +50,11 @@
       "body":"{\"foo\":\"bar\"}"
    }
 }
+```
 
 ---------------------------------------
 ####POST JSON
+```json
 {
    "request":{
       "url":"testtext",
@@ -66,3 +71,4 @@
       "body":"Accepted"
    }
 }
+```
