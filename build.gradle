@@ -20,18 +20,13 @@ targetCompatibility = 1.8
 
 dependencies {
 
-    // tag::jetty[]
     compile(springBoot.web) {
         exclude module: springBoot.tomcat
     }
     compile springBoot.jetty
-    // end::jetty[]
-    // tag::actuator[]
     compile springBoot.actuator
     compile gson
     compile hibernateValidator
-    // end::actuator[]
-    //compile("org.springframework.boot:spring-boot-starter-actuator")
     testCompile junit
     testCompile springBoot.test
     testCompile mockito

@@ -30,7 +30,6 @@ public class StubStore {
                 (p.getHeaders() == null && queryHeaders == null) ||
                 (p.getHeaders() == null && queryHeaders != null) ||
                 ((queryHeaders != null && p.getHeaders() != null) && queryHeaders.entrySet().containsAll(p.getHeaders().entrySet()));
-       System.out.println("headersAreEqualPredicate:"+headersAreEqualPredicate);
        return queryHeadersNullSavedNot(queryHeaders).negate().and(headersAreEqualPredicate);
     }
 
