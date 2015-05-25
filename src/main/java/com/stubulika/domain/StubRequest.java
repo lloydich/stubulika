@@ -25,11 +25,11 @@ public class StubRequest {
     }
 
     @JsonView(View.Summary.class)
-    @NotEmpty
+    @NotEmpty( message = "{error.request.url.empty}")
     private String url;
 
     @JsonView(View.Summary.class)
-    @NotEmpty
+    @NotEmpty(message = "{error.request.method.empty}")
     private String method;
 
     private String body;

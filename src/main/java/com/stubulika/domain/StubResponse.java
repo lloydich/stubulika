@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class StubResponse {
 
     @JsonView(View.Summary.class)
-    @NotNull
+    @NotNull(message = "{error.response.status.null}")
     private Integer status;
     private String body;
     private HttpHeaders headers;

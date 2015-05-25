@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubRequestBuilder;
 import com.stubulika.domain.StubResponse;
+import com.stubulika.resource.Message;
+import com.stubulika.resource.MessageType;
 import com.stubulika.resource.StubWrapper;
 import com.stubulika.resource.View;
 import org.junit.Test;
@@ -55,14 +57,16 @@ public class StubAdminControllerTest {
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper,null);
+        ResponseEntity<Message> response = rest.postForEntity(ADMIN_URL, stubWrapper, Message.class);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.CREATED));
+        assertThat( response.getBody().getType() , equalTo(MessageType.SUCCESS));
+        assertThat( response.getBody().getMessage() , equalTo("Your stub has been added"));
     }
 
     @Test
-    public void shouldNotSaveAStubAdminRequestWhenNoRequestUrlSupplied() throws Exception {
+    public void shouldNotSaveAStubAdminRequest_WhenNoRequestUrlSupplied() throws Exception {
         //given
         final String requestUrl = null;
         final String requestMethod = "POST";
@@ -71,14 +75,16 @@ public class StubAdminControllerTest {
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
+        ResponseEntity<Message> response = rest.postForEntity(ADMIN_URL, stubWrapper,  Message.class);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+        assertThat( response.getBody().getType() , equalTo(MessageType.ERROR));
+        assertThat( response.getBody().getMessage() , equalTo("URL must contain text"));
     }
 
     @Test
-    public void shouldNotSaveAStubAdminRequestWhenNoRequestMethodSupplied() throws Exception {
+    public void shouldNotSaveAStubAdminRequest_WhenNoRequestMethodSupplied() throws Exception {
         //given
         final String requestUrl = "url";
         final String requestMethod = null;
@@ -87,15 +93,17 @@ public class StubAdminControllerTest {
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
+        ResponseEntity<Message> response = rest.postForEntity(ADMIN_URL, stubWrapper,  Message.class);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+        assertThat( response.getBody().getType() , equalTo(MessageType.ERROR));
+        assertThat( response.getBody().getMessage() , equalTo("Method must contain text"));
     }
 
 
     @Test
-    public void shouldNotSaveAStubAdminRequestWhenNoResponseStatusCodeSupplied() throws Exception {
+    public void shouldNotSaveAStubAdminRequest_WhenNoResponseStatusCodeSupplied() throws Exception {
         //given
         final String requestUrl = "url";
         final String requestMethod = "POST";
@@ -105,10 +113,12 @@ public class StubAdminControllerTest {
         RestTemplate rest = new TestRestTemplate();
 
         //when
-        ResponseEntity<?> response = rest.postForEntity(ADMIN_URL, stubWrapper, null);
+        ResponseEntity<Message> response = rest.postForEntity(ADMIN_URL, stubWrapper, Message.class);
 
         //then
         assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+        assertThat( response.getBody().getType() , equalTo(MessageType.ERROR));
+        assertThat( response.getBody().getMessage() , equalTo("You must set a HTTP status code"));
     }
 
 
@@ -191,7 +201,7 @@ public class StubAdminControllerTest {
         HttpEntity<?> requestEntity = new HttpEntity<Object>(stubWrapper, new HttpHeaders());
 
         //when
-        ResponseEntity<String> deleteResponse = rest.exchange(ADMIN_URL, HttpMethod.DELETE, requestEntity, String.class);
+        ResponseEntity<Message> deleteResponse = rest.exchange(ADMIN_URL, HttpMethod.DELETE, requestEntity, Message.class);
         logger.debug("shouldDeleteStubAdminRequest() delete response:"+deleteResponse);
 
 
@@ -200,6 +210,9 @@ public class StubAdminControllerTest {
         logger.debug("shouldDeleteStubAdminRequest() get response:"+response);
 
         //then
+        assertThat(deleteResponse.getStatusCode() , equalTo(HttpStatus.ACCEPTED));
+        assertThat(deleteResponse.getBody().getType() , equalTo(MessageType.SUCCESS));
+        assertThat(deleteResponse.getBody().getMessage() , equalTo("Your stub will be deleted"));
         assertThat(response.getBody().size(), equalTo(0));
 
     }
@@ -229,4 +242,12 @@ public class StubAdminControllerTest {
         stubWrapper.setResponse(stubResponse);
         return stubWrapper;
     }
+
+//    private String getValidationErrorMessage(BindingResult result, String field) {
+//        if (result.hasErrors()) {
+//            FieldError fieldError = result.getFieldError(field);
+//            return messageSourceAccessor.getMessage(fieldError);
+//        }
+//        return "";
+//    }
 }
