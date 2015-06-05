@@ -1,6 +1,7 @@
 package com.stubulika.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stubulika.domain.StubAdminService;
 import com.stubulika.domain.StubRequest;
 import com.stubulika.domain.StubResponse;
@@ -14,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,10 +24,35 @@ import java.util.List;
 @RequestMapping("/admin")
 public class StubAdminController {
 
-    Logger logger = LoggerFactory.getLogger(StubAdminController.class);
+    private Logger logger = LoggerFactory.getLogger(StubAdminController.class);
+
+    private React react;
+
+    private ObjectMapper mapper;
 
     @Autowired
     private StubAdminService stubAdminService;
+
+
+    @Autowired
+    public StubAdminController(StubAdminService service) {
+        this.stubAdminService = service;
+        this.react = new React();
+        this.mapper = new ObjectMapper();
+    }
+
+    @RequestMapping("/web")
+    public ModelAndView index() throws Exception {
+        List<StubWrapper> stubs = stubAdminService.findAll();
+        String data = mapper.writeValueAsString(stubs);
+        logger.debug("index() data:"+data);
+        String stubBox = react.renderStubBox(stubs);
+        ModelAndView model = new ModelAndView();
+        model.addObject("content", stubBox);
+        model.addObject("data", data);
+        model.setViewName("index");
+        return model;
+    }
 
     @JsonView(View.Summary.class)
     @RequestMapping(method = RequestMethod.GET, value = "/summary")

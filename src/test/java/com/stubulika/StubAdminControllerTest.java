@@ -53,7 +53,7 @@ public class StubAdminControllerTest {
         final String requestUrl = "aUrl";
         final String requestMethod = "POST";
 
-        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, STATUS_CODE);
         RestTemplate rest = new TestRestTemplate();
 
         //when
@@ -71,7 +71,7 @@ public class StubAdminControllerTest {
         final String requestUrl = null;
         final String requestMethod = "POST";
 
-        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, STATUS_CODE);
         RestTemplate rest = new TestRestTemplate();
 
         //when
@@ -89,7 +89,7 @@ public class StubAdminControllerTest {
         final String requestUrl = "url";
         final String requestMethod = null;
 
-        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, 200);
+        StubWrapper stubWrapper = createStubAdminRequest(requestUrl, requestMethod, STATUS_CODE);
         RestTemplate rest = new TestRestTemplate();
 
         //when
@@ -124,11 +124,11 @@ public class StubAdminControllerTest {
 
 
     @Test
-    public void shouldRetrieveAStubAdminRequests() throws Exception{
+    public void shouldRetrieveStubAdminRequests() throws Exception{
         //given
-        StubWrapper stubAdminRequest1 = createStubAdminRequest("test1", "GET", 200);
-        StubWrapper stubAdminRequest2 = createStubAdminRequest("test2", "GET", 200);
-        StubWrapper stubAdminRequest3 = createStubAdminRequest("test3", "POST", 200);
+        StubWrapper stubAdminRequest1 = createStubAdminRequest("test1", "GET", STATUS_CODE);
+        StubWrapper stubAdminRequest2 = createStubAdminRequest("test2", "GET", STATUS_CODE);
+        StubWrapper stubAdminRequest3 = createStubAdminRequest("test3", "POST", STATUS_CODE);
 
         RestTemplate rest = new TestRestTemplate();
 
@@ -156,11 +156,11 @@ public class StubAdminControllerTest {
     }
 
     @Test
-    public void shouldRetrieveAStubAdminRequestsSummary() throws Exception {
+    public void shouldRetrieveStubAdminRequestsSummary() throws Exception {
         //given
-        StubWrapper stubAdminRequest1 = createStubAdminRequest("test1", "GET", 200);
-        StubWrapper stubAdminRequest2 = createStubAdminRequest("test2", "PUT", 200);
-        StubWrapper stubAdminRequest3 = createStubAdminRequest("test3", "POST", 200);
+        StubWrapper stubAdminRequest1 = createStubAdminRequest("test1", "GET", STATUS_CODE);
+        StubWrapper stubAdminRequest2 = createStubAdminRequest("test2", "PUT", STATUS_CODE);
+        StubWrapper stubAdminRequest3 = createStubAdminRequest("test3", "POST", STATUS_CODE);
 
         RestTemplate rest = new TestRestTemplate();
 
@@ -193,7 +193,7 @@ public class StubAdminControllerTest {
     @Test
     public void shouldDeleteStubAdminRequest() throws Exception{
         //given
-        StubWrapper stubWrapper = createStubAdminRequest("test1", "GET", STATUS_CODE);
+        StubWrapper stubWrapper = createStubAdminRequest("test1", "GET", HttpStatus.OK.value());
         RestTemplate rest = new TestRestTemplate();
         rest.postForEntity(ADMIN_URL, stubWrapper, null);
 
@@ -242,12 +242,4 @@ public class StubAdminControllerTest {
         stubWrapper.setResponse(stubResponse);
         return stubWrapper;
     }
-
-//    private String getValidationErrorMessage(BindingResult result, String field) {
-//        if (result.hasErrors()) {
-//            FieldError fieldError = result.getFieldError(field);
-//            return messageSourceAccessor.getMessage(fieldError);
-//        }
-//        return "";
-//    }
 }

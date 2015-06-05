@@ -1,13 +1,17 @@
  Inspired by stub.by this is a stub application for serving canned responses based on different requests and exposes a REST API for administering creating
  stubbed requests/responses.   
- Written in spring boot / java 8, it has an embeded server and can be started up if you have Java 8 on your path using the following
+ Written in spring boot / java 8 & react, this is an example of a Isomorphic webapp  that pre-renders a MVC frontend on the JVM server without Node.js
+  It has an embeded tomcat server and can be started up if you have Java 8 on your path using the following
  command from within the checked out project folder:
 
-  **./gradlew build  && java -jar build/libs/stubulika-0.1.0.jar**
+  **./gradlew clean bootRun
+  
+ 
 
   1.   To create a stub request/response POST a json body to /admin on your server instance with a header of Content-Type application-json and a JSON body constituting your request/response (see examples below) to **admin/** . A **body** requires a request & response. A request requires a url & method whilst a response requires a status. Everything else is optional.
   2.   Retrieval of a stubResponse requires you to send the stubRequest as an actual request to the url that was saved at the admin endpoint. If you send a stubRequest POST which matches url & method, this will overwrite the existing stubRequest & stubResponse. Headers are matched if the saved stubRequest collection of headers is a subset of the actual request resulting in a stubbed Response being returned.
 
+  N.B There is also a web interface (built with React) at admin/web to POST stubs via a form.
 
 
 ###Example requests/responses:
